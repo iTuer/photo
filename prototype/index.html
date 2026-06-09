@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Web Demo v0.1｜参考图叠加相机</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="camera-section" aria-label="主拍摄区">
+        <div class="camera-header">
+          <div>
+            <p class="eyebrow">AI 摄影指导 MVP</p>
+            <h1>参考图叠加相机</h1>
+          </div>
+          <p class="camera-hint">授权摄像头后，将参考图半透明叠加到实时画面中完成对齐拍摄。</p>
+        </div>
+
+        <div id="cameraFrame" class="camera-frame" data-ratio="3:2">
+          <video id="cameraVideo" autoplay playsinline muted></video>
+          <img id="referenceOverlay" class="reference-overlay" alt="当前参考图叠加层" hidden />
+          <canvas id="guideCanvas" class="guide-canvas" aria-hidden="true"></canvas>
+          <div id="cameraFallback" class="camera-fallback">
+            <strong>正在请求摄像头权限</strong>
+            <span>如浏览器提示，请允许访问摄像头。</span>
+          </div>
+        </div>
+      </section>
+
+      <aside class="side-panel" aria-label="控制区">
+        <section class="panel-card reference-picker" aria-labelledby="referencePickerTitle">
+          <div class="section-title-row">
+            <h2 id="referencePickerTitle">参考图</h2>
+            <span id="referenceCount" class="subtle">0 张</span>
+          </div>
+          <div id="referenceList" class="reference-list" aria-label="参考图缩略图列表"></div>
+          <label class="add-reference" for="referenceInput" aria-label="添加参考图">
+            <span>+</span>
+            <small>添加</small>
+          </label>
+          <input id="referenceInput" type="file" accept="image/*" multiple hidden />
+        </section>
+
+        <section class="panel-card" aria-labelledby="ratioTitle">
+          <h2 id="ratioTitle">画幅比例</h2>
+          <div class="segmented-control" role="group" aria-label="画幅比例">
+            <button id="ratioLandscape" class="segment" type="button" data-ratio="3:2">3:2 横拍</button>
+            <button id="ratioPortrait" class="segment" type="button" data-ratio="2:3">2:3 竖拍</button>
+          </div>
+        </section>
+
+        <section class="panel-card" aria-labelledby="referenceControlTitle">
+          <div class="section-title-row">
+            <h2 id="referenceControlTitle">参考图控制</h2>
+            <span id="opacityValue" class="value-badge">45%</span>
+          </div>
+          <label class="range-row" for="opacityRange">
+            <span>透明度</span>
+            <input id="opacityRange" type="range" min="20" max="70" value="45" />
+          </label>
+          <label class="switch-row">
+            <span>显示参考图</span>
+            <input id="showReference" type="checkbox" checked />
+          </label>
+        </section>
+
+        <section class="panel-card" aria-labelledby="guidesTitle">
+          <h2 id="guidesTitle">参考线</h2>
+          <div class="guide-options">
+            <label class="switch-row">
+              <span>十字线</span>
+              <input id="guideCrosshair" type="checkbox" checked />
+            </label>
+            <label class="switch-row">
+              <span>交叉线</span>
+              <input id="guideDiagonal" type="checkbox" />
+            </label>
+            <label class="switch-row">
+              <span>九宫格</span>
+              <input id="guideThirds" type="checkbox" />
+            </label>
+            <label class="switch-row">
+              <span>十二宫格</span>
+              <input id="guideTwelfths" type="checkbox" />
+            </label>
+          </div>
+        </section>
+
+        <button id="captureButton" class="capture-button" type="button">拍摄</button>
+
+        <section class="panel-card photo-panel" aria-labelledby="photosTitle">
+          <div class="section-title-row">
+            <h2 id="photosTitle">已拍照片</h2>
+            <span id="photoCount" class="subtle">0 张</span>
+          </div>
+          <p id="photoEmpty" class="empty-state">暂无照片</p>
+          <div id="photoList" class="photo-list" aria-label="已拍照片缩略图列表"></div>
+        </section>
+      </aside>
+    </main>
+
+    <dialog id="previewDialog" class="preview-dialog" aria-label="照片大图预览">
+      <button id="closePreview" class="close-preview" type="button" aria-label="关闭预览">×</button>
+      <img id="previewImage" alt="拍摄照片大图预览" />
+    </dialog>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
